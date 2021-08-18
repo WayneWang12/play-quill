@@ -1,4 +1,4 @@
-package me.waynewang12.quill
+package io.github.waynewang12.quill
 
 import io.getquill._
 import io.getquill.context.qzio.ImplicitSyntax.Implicit

@@ -2,7 +2,7 @@ import com.softwaremill.macwire.wire
 import controllers.PetController
 import daos.PetDao
 import io.getquill.SnakeCase
-import me.waynewang12.quill.{MysqlQuillSource, QuillMySqlComponents}
+import io.github.waynewang12.quill.{MysqlQuillSource, QuillMySqlComponents}
 import play.api.db.HikariCPComponents
 import play.api.db.evolutions.EvolutionsComponents
 import play.api.mvc.EssentialFilter

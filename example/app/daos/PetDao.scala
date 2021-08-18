@@ -1,10 +1,10 @@
 package daos
 
 import io.getquill.SnakeCase
-import me.waynewang12.quill.MysqlQuillSource
+import io.github.waynewang12.quill.MysqlQuillSource
 import models.Pet
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class PetDao(mysqlQuillSource: MysqlQuillSource[SnakeCase])(implicit ec: ExecutionContext) {
   import mysqlQuillSource.ctx._

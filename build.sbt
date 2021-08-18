@@ -22,3 +22,15 @@ lazy val example = (project in file("example"))
     )
   )
   .dependsOn(`play-quill`)
+
+ThisBuild / publishMavenStyle := true
+
+credentials += Credentials(Path.userHome / ".sbt" / "credentials")
+
+ThisBuild / publishTo := {
+  val nexus = "https://s01.oss.sonatype.org/"
+  if (isSnapshot.value)
+    Some("snapshots" at nexus + "content/repositories/snapshots")
+  else
+    Some("releases" at nexus + "service/local/staging/deploy/maven2")
+}

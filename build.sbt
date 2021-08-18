@@ -1,6 +1,7 @@
 ThisBuild / scalaVersion := "2.13.6"
 ThisBuild / version := "0.0.1"
 ThisBuild / organization := "io.github.waynewang12"
+ThisBuild / crossScalaVersions := Seq("2.12.12", "2.13.6")
 
 lazy val `play-quill` = (project in file("."))
   .settings(

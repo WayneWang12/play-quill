@@ -18,3 +18,9 @@ libraryDependencies += "io.github.waynewang12" %% "play-quill" % "0.0.1"
 Support only Mysql currently. But it is easy to extend to other databases. Just refer to `QuillMysqlComponents` to create different database support.
 
 目前只支持Mysql，但是后续扩展比较简单，参照`QuillMysqlComponents`创建对应数据库的类型即可。
+
+## 运行示例 Run example
+
+Git clone this repositry and execute `sbt 'project example' run`. 
+
+将本仓库clone到本地，然后执行`sbt 'project example' run`，即可运行。

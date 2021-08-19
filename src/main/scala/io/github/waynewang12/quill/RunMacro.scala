@@ -16,4 +16,15 @@ private[quill] class RunMacro(val c: MacroContext) {
       import ${c.prefix}._
       runZio(ctx.run($quoted))
     """
+
+  def toZio[T](quoted: Tree)(implicit t: WeakTypeTag[T]): Tree =
+    q"""
+      import ${c.prefix}._
+      ctx.run($quoted)
+    """
+
+  def toZioSingle(quoted: Tree): Tree = q"""
+      import ${c.prefix}._
+      ctx.run($quoted)
+    """
 }

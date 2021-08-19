@@ -24,9 +24,19 @@ abstract class QuillSource[Dialect <: SqlIdiom, Naming <: NamingStrategy](
   def runZio[T](zio: ZIO[ctx.Environment, Throwable, T]): Future[T] =
     Runtime.default.unsafeRunToFuture(zio.implicitDS)
 
+  def runTransaction[T](zio: ZIO[ctx.Environment, Throwable, T]): Future[T] = runZio(ctx.transaction(zio))
+
+  def toZio[T](quoted: Quoted[T]): ZIO[ctx.Environment, Throwable, T] = macro RunMacro.toZio[T]
+  def toZio[T](quoted: Quoted[Query[T]]): ZIO[ctx.Environment, Throwable, List[T]] = macro RunMacro.toZio[T]
+  def toZio(quoted: Quoted[Action[_]]): ZIO[ctx.Environment, Throwable, Long] = macro RunMacro.toZioSingle
+  def toZio[T](quoted: Quoted[ActionReturning[_, T]]): ZIO[ctx.Environment, Throwable, T] = macro RunMacro.toZio[T]
+  def toZioBatchAction(quoted: Quoted[BatchAction[Action[_]]]): ZIO[ctx.Environment, Throwable, List[Long]] =
+    macro RunMacro.toZioSingle
+  def toZio[T](quoted: Quoted[BatchAction[ActionReturning[_, T]]]): ZIO[ctx.Environment, Throwable, List[T]] =
+    macro RunMacro.run[T]
+
   def run[T](quoted: Quoted[T]): Future[T] = macro RunMacro.run[T]
   def run[T](quoted: Quoted[Query[T]]): Future[List[T]] = macro RunMacro.run[T]
-
   def run(quoted: Quoted[Action[_]]): Future[Long] = macro RunMacro.runSingle
   def run[T](quoted: Quoted[ActionReturning[_, T]]): Future[T] =
     macro RunMacro.run[T]

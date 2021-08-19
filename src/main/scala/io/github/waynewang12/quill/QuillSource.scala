@@ -21,7 +21,7 @@ abstract class QuillSource[Dialect <: SqlIdiom, Naming <: NamingStrategy](
   implicit val env: Implicit[Has[DataSource with Closeable]]        = Implicit(
     Has(db.dataSource.asInstanceOf[DataSource with Closeable])
   )
-  def runZio[T](zio: ZIO[ctx.Environment, ctx.Error, T]): Future[T] =
+  def runZio[T](zio: ZIO[ctx.Environment, Throwable, T]): Future[T] =
     Runtime.default.unsafeRunToFuture(zio.implicitDS)
 
   def run[T](quoted: Quoted[T]): Future[T] = macro RunMacro.run[T]

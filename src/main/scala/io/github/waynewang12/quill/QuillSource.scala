@@ -1,6 +1,7 @@
 package io.github.waynewang12.quill
 
 import io.getquill._
+import io.getquill.context.ContextEffect
 import io.getquill.context.qzio.ImplicitSyntax.Implicit
 import io.getquill.context.qzio.ZioJdbcContext
 import io.getquill.context.sql.idiom.SqlIdiom
@@ -8,6 +9,7 @@ import play.api.db.Database
 import zio.{ Has, Runtime, ZIO }
 
 import java.io.Closeable
+import java.sql.{ Connection, SQLException }
 import javax.sql.DataSource
 import scala.concurrent.Future
 import scala.language.experimental.macros
@@ -52,5 +54,18 @@ abstract class QuillSource[Dialect <: SqlIdiom, Naming <: NamingStrategy](
 class MysqlQuillSource[Naming <: NamingStrategy](db: Database, naming: Naming)
     extends QuillSource[MySQLDialect, Naming](db) {
   override val ctx: ZioJdbcContext[MySQLDialect, Naming] =
-    new MysqlZioJdbcContext[Naming](naming)
+    new MysqlZioJdbcContext[Naming](naming) {
+      override protected val effect = new ContextEffect[Result] {
+        override def wrap[T](t: => T): ZIO[Has[Connection], SQLException, T] =
+          throw new IllegalArgumentException("Runner not used for zio context.")
+        override def push[A, B](
+            result: ZIO[Has[Connection], SQLException, A]
+        )(f: A => B): ZIO[Has[Connection], SQLException, B]                  =
+          result.map(f)
+        override def seq[A](
+            f: List[ZIO[Has[Connection], SQLException, A]]
+        ): ZIO[Has[Connection], SQLException, List[A]]                       =
+          ZIO.collectAll(f)
+      }
+    }
 }
